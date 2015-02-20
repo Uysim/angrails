@@ -7,7 +7,7 @@ myApp.config(['$routeProvider'
 				templateUrl: 'assets/templates/index.html'
 				controller: 'indexController'
 			)
-			.when('/show'
+			.when('/names/:nameId'
 				templateUrl: 'assets/templates/show.html'
 				controller: 'showController'
 			)
@@ -16,26 +16,26 @@ myApp.config(['$routeProvider'
 			)
 ])
 
-myApp.factory('nameService',()->
-	name=null
-	{
-		setName: (nameparam)->
-			name=nameparam
-		getName: ()->
-			name
-	}
-)
+# myApp.factory('nameService',()->
+# 	name=null
+# 	{
+# 		setName: (nameparam)->
+# 			name=nameparam
+# 		getName: ()->
+# 			name
+# 	}
+# )
 
-myApp.controller('indexController',['$scope','$http','nameService'
-	($scope,$http,nameService)->
+myApp.controller('indexController',['$scope','$http'
+	($scope,$http)->
 		$http.get('./names/index.json').success(then(data)->
 			$scope.names=data
 		)
-		$scope.show=(name)->
-			nameService.setName(name)
 ])
 
-myApp.controller('showController',['$scope','nameService'
-	($scope,nameService)->
-		$scope.name=nameService.getName()
+myApp.controller('showController',['$scope','$http','$routeParams','$location'
+	($scope,$http,$routeParams,$location)->
+		$http.get('/names/'+$routeParams.nameId+'.json').success(then(data)->
+			$scope.name=data
+		)
 ])
